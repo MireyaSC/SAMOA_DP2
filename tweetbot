@@ -1,0 +1,39 @@
+#!usr/bin/env python3
+
+import tweepy
+import sys
+from tweepy import Stream
+from tweepy.streaming import StreamListener
+import json
+
+user_city=sys.argv[3]
+name=sys.argv[5]
+code=sys.argv[2]
+
+class StdOutListener(StreamListener):
+  def on_data(self,data):
+    clean_data = json.loads(data)
+    tweetId = clean_data["id"]
+    tweet = "Hello , this is samoa! Here we have a perfect house in {user_City} for you with the code {code}! Please do not hesitate to contact us!"
+    respondToTweet(tweet, tweetId)
+
+def setUpAuth():
+    auth = tweepy.OAuthHandler("ScjDi17IteKYM5bLLu4DAZzqt","CmJpGrDDcWXyAmwcnJYNsBrhgH7uUiTnmM7iYpDg0sjBh3VkLQ")
+    auth.set_access_token("1345395562414297095-M0WyQsoQukRG8V8TVElA6QvfPGH7rN", "ZqZr79KYHelnxkBinBVknsa4ZX5rBLEZXLSCiP2v3cZRt")
+    api = tweepy.API(auth)
+    return api, auth
+
+keywords = ("My name is" and "#mdaedem")
+def followstream(keywords):
+     api, auth = setUpAuth()
+     listener = StdOutListener()
+     stream = Stream(auth,listener)
+     stream.filter(track=keywords)
+
+def respondToTweet(tweet, tweetId):
+    api, auth = setUpAuth()
+    api.update_status(tweet, in_reply_to_status_id=tweetId, auto_populate_reply_metadata=True)
+
+
+if __name__ == "__main__":
+    followstream(["My name mdaedem"])
